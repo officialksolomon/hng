@@ -28,6 +28,7 @@ gunicorn==21.2.0
 idna==3.4
 maxminddb==2.6.2
 multidict==6.0.5
+mysqlclient==2.2.4
 oauthlib==3.2.2
 packaging==23.1
 phonenumbers==8.13.39
