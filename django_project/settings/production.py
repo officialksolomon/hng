@@ -4,7 +4,7 @@ from .base import *  # noqa: F403  # noqa: F403
 
 DEBUG = False
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-ALLOWED_HOSTS = [ "hng.pythonanywhere.com"]
+ALLOWED_HOSTS = ["solomonxuche.pythonanywhere.com"]
 
 # Database Configuration
 DATABASES = {
