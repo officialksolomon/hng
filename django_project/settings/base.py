@@ -185,5 +185,5 @@ DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
 # geoip2
 GEOIP_PATH = os.path.join(
-    BASE_DIR, "geoip\\GeoLite2-City_20240628", "GeoLite2-City.mmdb"
+    BASE_DIR, os.getenv('GEOIP_PATH'), "GeoLite2-City.mmdb"
 )
