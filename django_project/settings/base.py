@@ -184,6 +184,5 @@ ACCOUNT_FORMS = {
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
 # geoip2
-GEOIP_PATH = os.path.join(
-    BASE_DIR, os.getenv('GEOIP_PATH'), "GeoLite2-City.mmdb"
-)
+GEOIP_PATH = os.path.join(BASE_DIR, os.getenv("GEOIP_PATH"), "GeoLite2-City.mmdb")
+OPENWEATHERMAP_API_KEY = os.getenv('OPENWEATHERMAP_API_KEY')

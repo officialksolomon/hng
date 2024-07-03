@@ -7,11 +7,11 @@ from api.utils import get_location_and_temperature
 
 class GreetingView(APIView):
     def get_client_ip(self, request):
-        # x_forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR")
-        # if x_forwarded_for:
-        ip = request.META.get("HTTP_X_FORWARDED_FOR").split(",")[0]
-        # else:
-        #     ip = request.META.get("REMOTE_ADDR")
+        x_forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR")
+        if x_forwarded_for:
+            ip = x_forwarded_for
+        else:
+            ip = request.META.get("REMOTE_ADDR")
         return ip
 
     def get(self, request):
