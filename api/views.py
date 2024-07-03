@@ -17,7 +17,7 @@ class GreetingView(APIView):
     def get(self, request):
         visitor_name = request.query_params.get("visitor_name", "Visitor")
         client_ip = self.get_client_ip(request)
-        location, temperature = get_location_and_temperature(client_ip)
+        location, temperature = get_location_and_temperature("197.210.79.124")
         greeting = None
         if location and temperature:
             greeting = f"Hello, {visitor_name}!, the temperature is {temperature} degrees Celsius in {location}"
