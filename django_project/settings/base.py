@@ -37,11 +37,16 @@ INSTALLED_APPS = [
     "bootstrap_datepicker_plus",
     "phonenumber_field",
     "rest_framework",
+    'knox',
     # Local
     "accounts",
     "pages",
     "api",
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': ('knox.auth.TokenAuthentication',),
+}
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#middleware
 MIDDLEWARE = [

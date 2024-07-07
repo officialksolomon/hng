@@ -1,3 +1,11 @@
 from django.contrib import admin
 
-# Register your models here.
+from api.models import Organisation
+
+
+class OrganisationAdmin(admin.ModelAdmin):
+    list_display = ("org_id", "name", "description")
+    search_fields = ("name",)
+
+
+admin.site.register(Organisation, OrganisationAdmin)
