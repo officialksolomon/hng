@@ -1,5 +1,5 @@
 from django.urls import path
-
+from knox import views as knox_views
 
 from api.views import (
     AddUserToOrganisationView,
@@ -8,6 +8,8 @@ from api.views import (
     OrganisationDetailView,
     OrganisationListView,
     UserDetailView,
+    LoginView, 
+    RegisterView,
 )
 
 urlpatterns = [
@@ -28,4 +30,8 @@ urlpatterns += [
         AddUserToOrganisationView.as_view(),
         name="add-user-to-organisation",
     ),
+     path("auth/register", RegisterView.as_view(), name="register"),
+    path("auth/login", LoginView.as_view(), name="login"),
+    path("auth/logout", knox_views.LogoutView.as_view(), name="logout"),
+    path("auth/logoutall", knox_views.LogoutAllView.as_view(), name="logoutall"),
 ]
