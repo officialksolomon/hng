@@ -33,11 +33,12 @@ INSTALLED_APPS = [
     "debug_toolbar",
     "django_extensions",
     "django_browser_reload",
+    # "django_nose",
     # "ckeditor",
     "bootstrap_datepicker_plus",
     "phonenumber_field",
     "rest_framework",
-    'knox',
+    "knox",
     # Local
     "accounts",
     "pages",
@@ -45,7 +46,7 @@ INSTALLED_APPS = [
 ]
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': ('knox.auth.TokenAuthentication',),
+    "DEFAULT_AUTHENTICATION_CLASSES": ("knox.auth.TokenAuthentication",),
 }
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#middleware
@@ -190,4 +191,41 @@ DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
 # geoip2
 GEOIP_PATH = os.path.join(BASE_DIR, os.getenv("GEOIP_PATH"), "GeoLite2-City.mmdb")
-OPENWEATHERMAP_API_KEY = os.getenv('OPENWEATHERMAP_API_KEY')
+OPENWEATHERMAP_API_KEY = os.getenv("OPENWEATHERMAP_API_KEY")
+
+# django-nose
+# TEST_RUNNER = "django_nose.NoseTestSuiteRunner"
+
+## JWT settings
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ),
+}
+
+# Simple JWT settings
+from datetime import timedelta  # noqa: E402
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+    "ROTATE_REFRESH_TOKENS": False,
+    "BLACKLIST_AFTER_ROTATION": True,
+    "UPDATE_LAST_LOGIN": False,
+    "ALGORITHM": "HS256",
+    "SIGNING_KEY": SECRET_KEY,
+    "VERIFYING_KEY": None,
+    "AUDIENCE": None,
+    "ISSUER": None,
+    "AUTH_HEADER_TYPES": ("Bearer",),
+    "USER_ID_FIELD": "user_id",
+    "USER_ID_CLAIM": "user_id",
+    "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
+    "TOKEN_TYPE_CLAIM": "token_type",
+    "JTI_CLAIM": "jti",
+}
+
+from rest_framework_simplejwt.settings import api_settings  # noqa: E402
+
+# Update the USER_ID_FIELD setting to use 'user_id'
+api_settings.USER_ID_FIELD = "user_id"

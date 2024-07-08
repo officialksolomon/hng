@@ -8,7 +8,7 @@ from accounts.models import CustomUser
 from api.models import Organisation
 from api.utils import get_location_and_temperature
 
-from .serializers import LoginSerializer, OrganisationSerializer, RegisterSerializer, UserSerializer
+from api.serializers import LoginSerializer, OrganisationSerializer, RegisterSerializer, UserSerializer
 
 
 class GreetingView(APIView):
