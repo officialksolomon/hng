@@ -9,7 +9,7 @@ app_name ='api'
 urlpatterns = [
     path("hello/", GreetingView.as_view(), name="hello"),
     path("users/<uuid:uuid>/", UserDetailView.as_view(), name="user-detail"),
-    # path("organisations", OrganisationListView.as_view(), name="organisation-list"),
+    path("organisations", OrganisationListView.as_view(), name="organisation-list"),
     path(
         "organisations/<uuid:org_id>/",
         OrganisationDetailView.as_view(),
