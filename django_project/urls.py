@@ -13,10 +13,10 @@ urlpatterns = [
     # django-browser_reload
     path("__reload__/", include("django_browser_reload.urls")),
     # auth
-    path("auth/register", RegisterView.as_view(), name="register"),
-    path("auth/login", LoginView.as_view(), name="login"),
-    path("auth/logout", knox_views.LogoutView.as_view(), name="logout"),
-    path("auth/logoutall", knox_views.LogoutAllView.as_view(), name="logoutall"),
+    path("auth/register/", RegisterView.as_view(), name="register"),
+    path("auth/login/", LoginView.as_view(), name="login"),
+    path("auth/logout/", knox_views.LogoutView.as_view(), name="logout"),
+    path("auth/logoutall/", knox_views.LogoutAllView.as_view(), name="logoutall"),
 ]
 
 if settings.DEBUG:
