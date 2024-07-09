@@ -8,16 +8,16 @@ from api.views import (AddUserToOrganisationView, GreetingView, LoginView,
 app_name ='api'
 urlpatterns = [
     path("hello/", GreetingView.as_view(), name="hello"),
-    path("users/<uuid:id>", UserDetailView.as_view(), name="user-detail"),
-    path("organisations", OrganisationListView.as_view(), name="organisation-list"),
+    path("users/<uuid:uuid>", UserDetailView.as_view(), name="user-detail"),
+    # path("organisations", OrganisationListView.as_view(), name="organisation-list"),
     path(
-        "organisations/<uuid:pk>",
+        "organisations/<uuid:org_id>",
         OrganisationDetailView.as_view(),
         name="organisation-detail",
     ),
     path("organisations", OrganisationCreateView.as_view(), name="organisation-create"),
     path(
-        "organisations/<uuid:orgId>/users",
+        "organisations/<uuid:org_id>/users",
         AddUserToOrganisationView.as_view(),
         name="add-user-to-organisation",
     ),

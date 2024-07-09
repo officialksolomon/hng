@@ -60,7 +60,7 @@ class RegisterView(generics.CreateAPIView):
                 }
             }
             return Response(data, status=status.HTTP_201_CREATED, headers=headers)
-        except ValidationError as e:
+        except ValidationError:
             return Response(
                 {
                     'status': 'Bad request',
@@ -126,42 +126,99 @@ class OrganisationView(generics.ListCreateAPIView):
         serializer.save(users=[self.request.user])
 
 
-class UserDetailView(generics.RetrieveAPIView):
-    queryset = CustomUser.objects.all()
-    serializer_class = UserSerializer
+
+class UserDetailView(APIView):
     permission_classes = [IsAuthenticated]
 
-    def get_queryset(self):
-        user = self.request.user
-        return CustomUser.objects.filter(id=user.id)
+    def get(self, request, *args, **kwargs):
+        try:
+            user = CustomUser.objects.get(pk=kwargs['uuid'])
+        except CustomUser.DoesNotExist:
+            return Response({
+                'status': 'error',
+                'message': 'User not found',
+                'statusCode': 404
+            }, status=status.HTTP_404_NOT_FOUND)
+
+        UserSerializer(user)
+        response_data = {
+            'status': 'success',
+            'message': 'User details retrieved successfully',
+            'data': {
+                'userId': user.user_id,
+                'firstName': user.first_name,
+                'lastName': user.last_name,
+                'email': user.email,
+                'phone': user.phone
+            }
+        }
+        return Response(response_data, status=status.HTTP_200_OK)
 
 
-class OrganisationListView(generics.ListAPIView):
-    serializer_class = OrganisationSerializer
+
+class OrganisationListView(APIView):
     permission_classes = [IsAuthenticated]
 
-    def get_queryset(self):
-        user = self.request.user
-        return user.organisations.all()
+    def get(self, request):
+        # Assuming you have a way to get the user's organisations
+        organisations = Organisation.objects.filter(users=request.user)
+        serializer = OrganisationSerializer(organisations, many=True)
+
+        response_data = {
+            "status": "success",
+            "message": "Organisations retrieved successfully",
+            "data": {
+                "organisations": serializer.data
+            }
+        }
+        return Response(response_data, status=status.HTTP_200_OK)
 
 
-class OrganisationDetailView(generics.RetrieveAPIView):
-    queryset = Organisation.objects.all()
-    serializer_class = OrganisationSerializer
+class OrganisationDetailView(APIView):
     permission_classes = [IsAuthenticated]
 
-    def get_queryset(self):
-        user = self.request.user
-        return user.organisations.all()
+    def get(self, request, org_id):
+        try:
+            # Fetch the organisation details based on orgId
+            organisation = Organisation.objects.get(org_id=org_id, users=request.user)
+            serializer = OrganisationSerializer(organisation)
+
+            response_data = {
+                "status": "success",
+                "message": "Organisation details retrieved successfully",
+                "data": serializer.data
+            }
+            return Response(response_data, status=status.HTTP_200_OK)
+        except Organisation.DoesNotExist:
+            return Response({
+                "status": "fail",
+                "message": "Organisation not found",
+                "statusCode": 404
+            }, status=status.HTTP_404_NOT_FOUND)
 
 
-class OrganisationCreateView(generics.CreateAPIView):
-    serializer_class = OrganisationSerializer
+class OrganisationCreateView(APIView):
     permission_classes = [IsAuthenticated]
 
-    def perform_create(self, serializer):
-        organisation = serializer.save()
-        organisation.users.add(self.request.user)
+    def post(self, request):
+        serializer = OrganisationSerializer(data=request.data)
+        if serializer.is_valid():
+            organisation = serializer.save()
+            return Response({
+                "status": "success",
+                "message": "Organisation created successfully",
+                "data": {
+                    "orgId": str(organisation.pk),
+                    "name": organisation.name,
+                    "description": organisation.description
+                }
+            }, status=status.HTTP_201_CREATED)
+        return Response({
+            "status": "Bad Request",
+            "message": "Client error",
+            "statusCode": 400,
+            "errors": serializer.errors
+        }, status=status.HTTP_400_BAD_REQUEST)
 
 
 class AddUserToOrganisationView(APIView):

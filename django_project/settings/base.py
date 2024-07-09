@@ -199,6 +199,7 @@ OPENWEATHERMAP_API_KEY = os.getenv("OPENWEATHERMAP_API_KEY")
 ## JWT settings
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
+        'knox.auth.TokenAuthentication',
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
 }
