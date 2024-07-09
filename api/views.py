@@ -3,7 +3,8 @@ from rest_framework import generics, status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
+from rest_framework.exceptions import ValidationError
+from rest_framework_simplejwt.tokens import RefreshToken
 from accounts.models import CustomUser
 from api.models import Organisation
 from api.utils import get_location_and_temperature
@@ -33,31 +34,41 @@ class GreetingView(APIView):
 
 
 # Task 2
-
-
-class RegisterView(generics.GenericAPIView):
+class RegisterView(generics.CreateAPIView):
     serializer_class = RegisterSerializer
-    permission_classes = [AllowAny]
 
-    def post(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
+    def perform_create(self, serializer):
         user = serializer.save()
-        _, token = AuthToken.objects.create(user)
-        return Response(
-            {
-                "status": "success",
-                "message": "Registration successful",
-                "data": {
-                    "accessToken": token,
-                    "user": UserSerializer(
-                        user, context=self.get_serializer_context()
-                    ).data,
-                },
-            },
-            status=status.HTTP_201_CREATED,
+        Organisation.objects.create(
+            name=f"{user.first_name}'s Organisation",
+            description=f"{user.first_name}'s default organisation"
         )
 
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        try:
+            serializer.is_valid(raise_exception=True)
+            self.perform_create(serializer)
+            headers = self.get_success_headers(serializer.data)
+            refresh = RefreshToken.for_user(serializer.instance)
+            data = {
+                'status': 'success',
+                'message': 'Registration successful',
+                'data': {
+                    'accessToken': str(refresh.access_token),
+                    'user': serializer.data
+                }
+            }
+            return Response(data, status=status.HTTP_201_CREATED, headers=headers)
+        except ValidationError as e:
+            return Response(
+                {
+                    'status': 'Bad request',
+                    'message': 'Registration unsuccessful',
+                    'statusCode': 400,
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
 class LoginView(generics.GenericAPIView):
     permission_classes = [AllowAny]
